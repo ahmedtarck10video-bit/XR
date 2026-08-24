@@ -1,0 +1,6 @@
+{
+  "name": "Mixed Reality",
+  "description": "Interactive Mixed Reality viewer supporting 3D object exploration, Augmented Reality surface detection with first-person walking, and Stereoscopic 3D VR headset viewing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
