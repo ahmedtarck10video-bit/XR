@@ -1,4 +1,4 @@
-name: Build Mixed Reality APK
+name: Build Android APK
 
 on:
   push:
@@ -13,33 +13,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. تنزيل الكود من المستودع
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Java JDK 17
+      # 2. إعداد Java 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      # 3. تثبيت أدوات Android SDK
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Setup Gradle 8.4
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.4'
-          cache-disabled: true
-
-      - name: Build Debug APK
+      # 4. توليد Gradle Wrapper وبناء الـ APK تلقائياً
+      - name: Generate Gradle Wrapper & Build APK
         run: |
           yes | sdkmanager --licenses || true
-          gradle :app:assembleDebug --no-configuration-cache --no-daemon --stacktrace
+          gradle wrapper --gradle-version 8.4
+          chmod +x gradlew
+          ./gradlew assembleDebug --stacktrace --no-daemon
 
-      - name: Upload APK
+      # 5. رفع ملف الـ APK النهائي للتحميل
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: MixedReality-Debug-APK
+          name: app-debug
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
