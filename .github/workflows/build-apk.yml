@@ -13,34 +13,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. تنزيل الكود من المستودع
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. تثبيت Java 17
       - name: Set up Java JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
 
-      # 3. إعداد أدوات Android وقبول التراخيص
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      # 4. بناء الـ APK باستخدام Gradle المثبت في Runner
-      - name: Build with Gradle
+      - name: Setup Gradle 8.4
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.4'
+          cache-disabled: true
+
+      - name: Build Debug APK
         run: |
           yes | sdkmanager --licenses || true
-          chmod +x ./gradlew 2>/dev/null || true
-          if [ -f "./gradlew" ]; then
-            ./gradlew assembleDebug --no-daemon --stacktrace
-          else
-            gradle assembleDebug --no-daemon --stacktrace
-          fi
+          gradle :app:assembleDebug --no-configuration-cache --no-daemon --stacktrace
 
-      # 5. رفع الـ APK لتحميله مباشرة
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
