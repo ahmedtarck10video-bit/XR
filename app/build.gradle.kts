@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    alias(libs.plugins.kotlin-compose)
-    alias(libs.plugins.google-devtools-ksp) // use catalog alias for KSP (no explicit version)
+    alias(libs.plugins.kotlin.compose)               // from libs.versions.toml
+    alias(libs.plugins.google.devtools.ksp)          // use catalog alias for KSP (no explicit version)
 }
 
 android {
