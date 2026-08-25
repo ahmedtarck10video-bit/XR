@@ -2,18 +2,27 @@ plugins {
     alias(libs.plugins.android-application)
     alias(libs.plugins.kotlin-compose)
     alias(libs.plugins.google-devtools-ksp)
+
+    // فعّلهم فقط إذا كنت تستخدمهم في المشروع:
+    // alias(libs.plugins.google-services)
+    // alias(libs.plugins.secrets)
+    // alias(libs.plugins.roborazzi)
 }
 
 android {
-    namespace = "com.mixed.reality" // updated package namespace
-    compileSdk = 34
+    namespace = "com.mixed.reality"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.mixed.reality" // updated applicationId
+        applicationId = "com.mixed.reality"
+
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
+
         versionCode = 1
         versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -28,40 +37,84 @@ android {
     buildFeatures {
         compose = true
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.6.0"
-    }
 }
 
 dependencies {
-    val composeBom = platform("androidx.compose:compose-bom:2026.02.00")
-    implementation(composeBom)
 
-    implementation("androidx.core:core-ktx:1.18.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-    implementation("androidx.activity:activity-compose:1.10.1")
+    // ---------------------------------------------------------
+    // Compose BOM
+    // ---------------------------------------------------------
 
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(platform(libs.androidx.compose.bom))
 
-    implementation("androidx.navigation:navigation-compose:2.8.9")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
 
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
+
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+
+    // ---------------------------------------------------------
+    // AndroidX Core
+    // ---------------------------------------------------------
+
+    implementation(libs.androidx.core.ktx)
+
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.activity.compose)
+
+
+    // ---------------------------------------------------------
+    // Navigation
+    // ---------------------------------------------------------
+
+    implementation(libs.androidx.navigation.compose)
+
+
+    // ---------------------------------------------------------
+    // Coroutines
+    // ---------------------------------------------------------
+
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+
+
+    // ---------------------------------------------------------
     // CameraX
-    val cameraxVersion = "1.5.0"
-    implementation("androidx.camera:camera-core:$cameraxVersion")
-    implementation("androidx.camera:camera-camera2:$cameraxVersion")
-    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
-    implementation("androidx.camera:camera-view:$cameraxVersion")
+    // ---------------------------------------------------------
 
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+
+
+    // ---------------------------------------------------------
     // Room
-    val roomVersion = "2.7.0"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
+    // ---------------------------------------------------------
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+
+    ksp(libs.androidx.room.compiler)
+
+
+    // ---------------------------------------------------------
+    // Testing
+    // ---------------------------------------------------------
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.robolectric)
+
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.core)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 }
