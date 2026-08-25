@@ -28,11 +28,29 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
+      # ---------------------------
+      # Clear Gradle caches (FOR MIGRATION)
+      # ---------------------------
+      # This removes any stale plugin/artifact jars that may cause
+      # "plugin already on classpath with a different version" errors.
       - name: Clear Gradle caches
         run: |
           echo "Clearing Gradle caches to avoid stale plugin versions"
           rm -rf ~/.gradle/caches || true
           rm -rf ~/.gradle/daemon || true
+          rm -rf ~/.gradle/caches/modules-* || true
+
+      # ---------------------------
+      # Gradle cache that depends on version catalog (will be cold the first run)
+      # ---------------------------
+      - name: Cache Gradle state
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-cache-${{ runner.os }}-${{ hashFiles('gradle/libs.versions.toml') }}-${{ hashFiles('**/settings.gradle.kts') }}-${{ github.sha }}
+          restore-keys: gradle-cache-${{ runner.os }}-
 
       - name: Build Debug APK
         run: |
