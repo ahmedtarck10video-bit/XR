@@ -31,6 +31,7 @@ jobs:
       # ---------------------------
       # Clear Gradle caches (FOR MIGRATION)
       # ---------------------------
+      # Removes stale plugin/artifact jars that can cause "already on the classpath" errors.
       - name: Clear Gradle caches
         run: |
           echo "Clearing Gradle caches to avoid stale plugin versions"
