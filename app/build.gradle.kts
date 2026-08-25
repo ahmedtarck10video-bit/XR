@@ -1,8 +1,14 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10"
-    id("com.google.devtools.ksp") version "2.2.10-2.0.2"
+ // <project-root>/app/build.gradle.kts
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.kotlin-compose)
+    alias(libs.plugins.google-devtools-ksp) // use catalog alias instead of explicit "id(...) version ..."
+}
+// rest of your file unchanged (dependencies, etc.)   
 }
 // Room
 val roomVersion = 
