@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "your.package.name" // <- REPLACE with your package namespace
+    namespace = "mixed.reality" // <- REPLACE with your package namespace
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "your.package.name" // <- REPLACE with your applicationId
+        applicationId = "mixed.reality" // <- REPLACE with your applicationId
         minSdk = 24
         targetSdk = 34
         versionCode = 1
