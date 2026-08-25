@@ -1,3 +1,4 @@
+// settings.gradle.kts (place in project root)
 pluginManagement {
   repositories {
     google {
@@ -9,6 +10,8 @@ pluginManagement {
     }
     mavenCentral()
     gradlePluginPortal()
+  }
+
   resolutionStrategy {
     eachPlugin {
       if (requested.id.id == "com.google.devtools.ksp") {
@@ -17,10 +20,10 @@ pluginManagement {
     }
   }
 }
-  }
-}
 
-plugins { id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0" }
+plugins {
+  id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
 
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
