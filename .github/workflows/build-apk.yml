@@ -1,45 +1,64 @@
-steps:
-  - name: Checkout Code
-    uses: actions/checkout@v4
+name: Build Android APK
 
-  - name: Set up Java JDK 17
-    uses: actions/setup-java@v4
-    with:
-      java-version: '17'
-      distribution: 'temurin'
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
 
-  - name: Set up Android SDK
-    uses: android-actions/setup-android@v3
+jobs:
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-latest
 
-  - name: Setup Gradle
-    uses: gradle/actions/setup-gradle@v3
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-  - name: Clear Gradle caches
-    run: |
-      echo "Clearing Gradle caches to avoid stale plugin versions"
-      rm -rf ~/.gradle/caches || true
-      rm -rf ~/.gradle/daemon || true
-      rm -rf ~/.gradle/caches/modules-* || true
+      - name: Set up Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-  - name: Cache Gradle state
-    uses: actions/cache@v4
-    with:
-      path: |
-        ~/.gradle/caches
-        ~/.gradle/wrapper
-      key: gradle-cache-${{ runner.os }}-${{ hashFiles('gradle/libs.versions.toml') }}-${{ hashFiles('**/settings.gradle.kts') }}-${{ github.sha }}
-      restore-keys: gradle-cache-${{ runner.os }}-
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
 
-  - name: Build Debug APK
-    run: |
-      chmod +x gradlew || true
-      ./gradlew assembleDebug --no-daemon --no-configuration-cache --no-build-cache --refresh-dependencies --stacktrace || gradle :app:assembleDebug --no-daemon --no-configuration-cache --no-build-cache --refresh-dependencies --stacktrace
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-  - name: Upload Debug APK
-    uses: actions/upload-artifact@v4
-    with:
-      name: MixedReality-APK
-      path: "**/build/outputs/apk/debug/*.apk"
-      if-no-files-found: error
-      retention-days: 14
-      
+      # ---------------------------
+      # Clear Gradle caches (FOR MIGRATION)
+      # ---------------------------
+      - name: Clear Gradle caches
+        run: |
+          echo "Clearing Gradle caches to avoid stale plugin versions"
+          rm -rf ~/.gradle/caches || true
+          rm -rf ~/.gradle/daemon || true
+          rm -rf ~/.gradle/caches/modules-* || true
+
+      # ---------------------------
+      # Gradle cache that depends on version catalog (will be cold the first run)
+      # ---------------------------
+      - name: Cache Gradle state
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-cache-${{ runner.os }}-${{ hashFiles('gradle/libs.versions.toml') }}-${{ hashFiles('**/settings.gradle.kts') }}-${{ github.sha }}
+          restore-keys: gradle-cache-${{ runner.os }}-
+
+      - name: Build Debug APK
+        run: |
+          chmod +x gradlew || true
+          ./gradlew assembleDebug --no-daemon --no-configuration-cache --no-build-cache --refresh-dependencies --stacktrace || gradle :app:assembleDebug --no-daemon --no-configuration-cache --no-build-cache --refresh-dependencies --stacktrace
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: MixedReality-APK
+          path: "**/build/outputs/apk/debug/*.apk"
+          if-no-files-found: error
+          retention-days: 14
